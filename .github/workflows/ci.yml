@@ -6,7 +6,7 @@ env:
   DATABASE_URL: "https://fake.com"
 
 jobs:
-  build:
+  lint_and_typecheck:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,7 @@ jobs:
         run: pnpm install
 
       - name: Type check with TypeScript
-        run: pnpm run type-check
+        run: pnpm run typecheck
 
       - name: Lint with ESLint
         run: pnpm run lint
