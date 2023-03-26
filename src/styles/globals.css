@@ -7,4 +7,7 @@ it as part of className the initial server render won't have it and once it
 loads in the client then it will have it */
 body {
   @apply bg-black text-slate-100;
+
+  /* Stops page scroll and contorl scrolling in components */
+  overscroll-behavior: none;
 }
