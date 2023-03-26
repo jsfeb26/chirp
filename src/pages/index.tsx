@@ -37,6 +37,10 @@ const CreatePostWizard = () => {
 
   if (!user) return null;
 
+  const handlePost = () => {
+    mutate({ content: input });
+  };
+
   const isPostButtonVisible = input !== "" && !isPosting;
 
   return (
@@ -53,15 +57,21 @@ const CreatePostWizard = () => {
         className="grow bg-transparent outline-none"
         type="text"
         value={input}
-        onChange={(e) => setInput(e.target.value)}
         disabled={isPosting}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+
+            if (input !== "") {
+              handlePost();
+            }
+          }
+        }}
       />
-      {isPostButtonVisible && (
-        <button onClick={() => mutate({ content: input })}>Post</button>
-      )}
+      {isPostButtonVisible && <button onClick={handlePost}>Post</button>}
       {isPosting && (
         <div className="flex items-center justify-center">
-          {" "}
           <LoadingSpinner size={20} />
         </div>
       )}
