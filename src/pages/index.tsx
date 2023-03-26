@@ -1,8 +1,12 @@
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-import { api } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
+
+dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -21,6 +25,23 @@ const CreatePostWizard = () => {
         placeholder="Type some emojis!"
         className="grow bg-transparent outline-none"
       />
+    </div>
+  );
+};
+
+type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+
+const PostView = ({ post, author }: PostWithUser) => {
+  return (
+    <div key={post.id} className="flex gap-3 border-b border-slate-400 p-4">
+      <img src={author.profileImageUrl} className="h-14 w-14 rounded-full" />
+      <div className="flex flex-col">
+        <div className="flex gap-1 text-slate-300">
+          <span>{`@${author.username}`}</span>
+          <span className="font-thin">{` · 1 hour ago`}</span>
+        </div>
+        <span>{post.content}</span>
+      </div>
     </div>
   );
 };
@@ -50,10 +71,8 @@ const Home: NextPage = () => {
             {!!user.isSignedIn && <CreatePostWizard />}
           </div>
           <div className="flex flex-col">
-            {data?.map((post) => (
-              <div key={post.id} className="border-b border-slate-400 p-8 p-8">
-                {post.content}
-              </div>
+            {data?.map((fullPost) => (
+              <PostView key={fullPost.post.id} {...fullPost} />
             ))}
           </div>
         </div>
