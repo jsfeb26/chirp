@@ -1,15 +1,12 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import superjson from "superjson";
 
 import { api } from "~/utils/api";
-import { appRouter } from "~/server/api/root";
-import { prisma } from "~/server/db";
 import { PageLayout } from "~/components/Layout";
 import Image from "next/image";
 import { LoadingPage } from "~/components/Loading";
 import { PostView } from "~/components/PostView";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 interface ProfileFeedProps {
   userId: string;
@@ -74,12 +71,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = createProxySSGHelpers({
-    router: appRouter,
-    ctx: { prisma, userId: null },
-    transformer: superjson, // optional - adds superjson serialization
-  });
-
+  const ssg = generateSSGHelper();
   const slug = context.params?.slug;
 
   // TODO: Redirect to a different page
